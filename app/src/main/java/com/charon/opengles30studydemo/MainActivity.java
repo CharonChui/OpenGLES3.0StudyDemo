@@ -14,6 +14,7 @@ import com.charon.opengles30studydemo.square.SquareActivity;
 import com.charon.opengles30studydemo.texture.TextureActivity;
 import com.charon.opengles30studydemo.triangle.TriangleActivity;
 import com.charon.opengles30studydemo.video.VideoPlayerActivity;
+import com.charon.opengles30studydemo.videofilter.VideoFilterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mList.add(new MainBean("纹理", TextureActivity.class));
         mList.add(new MainBean("多重纹理", MultiTextureActivity.class));
         mList.add(new MainBean("视频播放", VideoPlayerActivity.class));
+        mList.add(new MainBean("视频播放滤镜", VideoFilterActivity.class));
         mMainAdapter = new MainAdapter(this, mList);
         mRecyclerView.setAdapter(mMainAdapter);
     }

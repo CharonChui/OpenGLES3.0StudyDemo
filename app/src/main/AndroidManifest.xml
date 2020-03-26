@@ -33,6 +33,7 @@
         <activity android:name=".texture.TextureActivity" />
         <activity android:name=".multitexture.MultiTextureActivity" />
         <activity android:name=".video.VideoPlayerActivity" />
+        <activity android:name=".videofilter.VideoFilterActivity" />
 
     </application>
 

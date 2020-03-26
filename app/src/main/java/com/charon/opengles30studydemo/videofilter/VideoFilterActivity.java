@@ -1,4 +1,4 @@
-package com.charon.opengles30studydemo.video;
+package com.charon.opengles30studydemo.videofilter;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
@@ -6,35 +6,33 @@ import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.Surface;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
 import com.charon.opengles30studydemo.R;
 
-public class VideoPlayerActivity extends Activity {
+public class VideoFilterActivity extends Activity {
     private GLSurfaceView mGLSurfaceView;
-    private VideoPlayerRender mVideoPlayerRender;
+    private VideoFilterRender mVideoFilterRender;
     private Surface mSurface;
     private MediaPlayer mMediaPlayer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_player);
+        setContentView(R.layout.activity_video_filter);
         mGLSurfaceView = findViewById(R.id.mGLSurfaceView);
         mGLSurfaceView.setEGLContextClientVersion(3);
-        mVideoPlayerRender = new VideoPlayerRender(mGLSurfaceView);
-        mVideoPlayerRender.setIVideoTextureRenderListener(new VideoPlayerRender.IVideoTextureRenderListener() {
+        mVideoFilterRender = new VideoFilterRender(mGLSurfaceView);
+        mVideoFilterRender.setIVideoTextureRenderListener(new VideoFilterRender.IVideoTextureRenderListener() {
             @Override
             public void onCreate(SurfaceTexture surfaceTexture) {
                 mSurface = new Surface(surfaceTexture);
                 startPlay();
             }
         });
-        mGLSurfaceView.setRenderer(mVideoPlayerRender);
+        mGLSurfaceView.setRenderer(mVideoFilterRender);
     }
 
     @Override
@@ -75,7 +73,7 @@ public class VideoPlayerActivity extends Activity {
                 @Override
                 public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
                     Log.e("@@@", "onVideoSizeChanged width : " + width + "...height..." + height);
-                    mVideoPlayerRender.setVideoSize(width, height);
+                    mVideoFilterRender.setVideoSize(width, height);
                 }
             });
             // 将surface设置给mediaplayer

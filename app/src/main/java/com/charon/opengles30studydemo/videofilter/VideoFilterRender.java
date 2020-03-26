@@ -1,4 +1,4 @@
-package com.charon.opengles30studydemo.video;
+package com.charon.opengles30studydemo.videofilter;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES30;
@@ -16,7 +16,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class VideoPlayerRender extends BaseGLSurfaceViewRenderer {
+public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
     private int mTextureId;
     private SurfaceTexture mSurfaceTexture;
     private GLSurfaceView mGLSurfaceView;
@@ -64,7 +64,7 @@ public class VideoPlayerRender extends BaseGLSurfaceViewRenderer {
             1.0f, 0.0f
     };
 
-    public VideoPlayerRender(GLSurfaceView surfaceView) {
+    public VideoFilterRender(GLSurfaceView surfaceView) {
         mGLSurfaceView = surfaceView;
         mVertextBuffer = BufferUtil.getFloatBuffer(POINT_DATA);
         mTextureBuffer = BufferUtil.getFloatBuffer(TEXTURE_DATA);
