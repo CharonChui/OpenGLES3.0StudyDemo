@@ -7,21 +7,29 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
 import com.charon.opengles30studydemo.R;
+import com.charon.opengles30studydemo.videofilter.base.BaseFilter;
+import com.charon.opengles30studydemo.videofilter.filter.BeautyFilter;
 
-public class VideoFilterActivity extends Activity {
+public class VideoFilterActivity extends Activity implements View.OnClickListener {
     private GLSurfaceView mGLSurfaceView;
     private VideoFilterRender mVideoFilterRender;
     private Surface mSurface;
     private MediaPlayer mMediaPlayer;
+    private Button mNormalFilter;
+    private Button mBeautyFilter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_filter);
+        mNormalFilter = findViewById(R.id.mNormalFilter);
+        mBeautyFilter = findViewById(R.id.mBeautyFilter);
         mGLSurfaceView = findViewById(R.id.mGLSurfaceView);
         mGLSurfaceView.setEGLContextClientVersion(3);
         mVideoFilterRender = new VideoFilterRender(mGLSurfaceView);
@@ -33,6 +41,8 @@ public class VideoFilterActivity extends Activity {
             }
         });
         mGLSurfaceView.setRenderer(mVideoFilterRender);
+        mNormalFilter.setOnClickListener(this);
+        mBeautyFilter.setOnClickListener(this);
     }
 
     @Override
@@ -105,6 +115,22 @@ public class VideoFilterActivity extends Activity {
             mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.mNormalFilter:
+                mVideoFilterRender.setFilter(new BaseFilter());
+                break;
+            case R.id.mBeautyFilter:
+                mVideoFilterRender.setFilter(new BeautyFilter());
+                break;
+
+            default:
+                break;
         }
     }
 }

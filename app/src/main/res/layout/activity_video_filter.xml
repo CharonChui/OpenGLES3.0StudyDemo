@@ -7,4 +7,20 @@
         android:id="@+id/mGLSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
+
+    <Button
+        android:id="@+id/mNormalFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mGLSurfaceView"
+        android:gravity="center"
+        android:text="正常" />
+
+    <Button
+        android:id="@+id/mBeautyFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mNormalFilter"
+        android:gravity="center"
+        android:text="美颜" />
 </RelativeLayout>

@@ -81,6 +81,12 @@ public class VideoPlayerActivity extends Activity {
             // 将surface设置给mediaplayer
             mMediaPlayer.setSurface(mSurface);
             mSurface.release();
+            mMediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                @Override
+                public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                    Log.e("@@@", "width : " + width + "..height.." + height);
+                }
+            });
             mMediaPlayer.setScreenOnWhilePlaying(true);
             mMediaPlayer.setLooping(true);
             mMediaPlayer.prepareAsync();

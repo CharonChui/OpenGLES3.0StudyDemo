@@ -10,8 +10,11 @@ import com.charon.opengles30studydemo.R;
 import com.charon.opengles30studydemo.base.BaseGLSurfaceViewRenderer;
 import com.charon.opengles30studydemo.util.BufferUtil;
 import com.charon.opengles30studydemo.util.TextureUtil;
+import com.charon.opengles30studydemo.videofilter.base.BaseFilter;
 
 import java.nio.FloatBuffer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -23,9 +26,7 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
     private boolean mUpdateSurfaceTexture;
     private FloatBuffer mVertextBuffer;
     private FloatBuffer mTextureBuffer;
-    private int vertexPosition;
-    private int texturePosition;
-    private int samplerTexturePosition;
+    private BaseFilter mFilter = new BaseFilter();
     /**
      * 视频的宽高
      */
@@ -41,10 +42,6 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
     private int mSurfaceWidth;
     private int mSurfaceHeight;
 
-    /**
-     * 坐标占用的向量个数
-     */
-    private static final int POSITION_COMPONENT_COUNT = 2;
     // 逆时针顺序排列
     private static final float[] POINT_DATA = {
             -1f, -1f,
@@ -52,10 +49,6 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
             -1f, 1f,
             1f, 1f,
     };
-    /**
-     * 颜色占用的向量个数
-     */
-    private static final int TEXTURE_COMPONENT_COUNT = 2;
     // 纹理坐标(s, t)，t坐标方向和顶点y坐标反着
     private static final float[] TEXTURE_DATA = {
             0.0f, 1.0f,
@@ -73,10 +66,7 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-        handleProgram(MyApplication.getInstance(), R.raw.video_vertex_shader, R.raw.video_fragment_shader);
-        vertexPosition = glGetAttribLocation("vPosition");
-        texturePosition = glGetAttribLocation("vCoordPosition");
-        samplerTexturePosition = glGetUniformLocation("uSamplerTexture");
+        mFilter.init();
         mTextureId = TextureUtil.createOESTextureId();
         mSurfaceTexture = new SurfaceTexture(mTextureId);
         mSurfaceTexture.setDefaultBufferSize(mGLSurfaceView.getWidth(), mGLSurfaceView.getHeight());
@@ -107,22 +97,14 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
     public void onDrawFrame(GL10 gl) {
         glClear(GLES30.GL_DEPTH_BUFFER_BIT | GLES30.GL_COLOR_BUFFER_BIT);
         adjustVideoSize();
-        glVertexAttribPointer(vertexPosition, POSITION_COMPONENT_COUNT, GLES30.GL_FLOAT, false, 0, mVertextBuffer);
-        glVertexAttribPointer(texturePosition, TEXTURE_COMPONENT_COUNT, GLES30.GL_FLOAT, false, 0, mTextureBuffer);
         synchronized (this) {
             if (mUpdateSurfaceTexture) {
                 mSurfaceTexture.updateTexImage();
                 mUpdateSurfaceTexture = false;
             }
         }
-        GLES30.glEnableVertexAttribArray(vertexPosition);
-        GLES30.glEnableVertexAttribArray(texturePosition);
-        GLES30.glUniform1i(samplerTexturePosition, 0);
-        // 绘制
-        GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
-        GLES30.glFlush();
-        GLES30.glDisableVertexAttribArray(vertexPosition);
-        GLES30.glDisableVertexAttribArray(texturePosition);
+        runAll(mRunOnDraw);
+        mFilter.onDraw(mTextureId, mVertextBuffer, mTextureBuffer);
     }
 
     public void setVideoSize(int width, int height) {
@@ -166,6 +148,42 @@ public class VideoFilterRender extends BaseGLSurfaceViewRenderer {
         mVertextBuffer.clear();
         mVertextBuffer.put(targetPositionData);
         mVertextBuffer.position(0);
+    }
+
+    public void setFilter(final BaseFilter filter) {
+        runOnDraw(new Runnable() {
+            @Override
+            public void run() {
+                mFilter.destroy();
+
+                mFilter = filter;
+                mFilter.init();
+                GLES30.glUseProgram(mFilter.getProgram());
+            }
+        });
+
+    }
+
+    //绘制线程集合
+    private Queue<Runnable> mRunOnDraw = new LinkedList();
+    /**
+     * 添加到线程
+     */
+    private void runOnDraw(Runnable runnable) {
+        synchronized(mRunOnDraw) {
+            mRunOnDraw.add(runnable);
+        }
+    }
+
+    /**
+     * 运行所以线程
+     */
+    private void runAll(Queue<Runnable> queue) {
+        synchronized(queue) {
+            while (!queue.isEmpty()) {
+                queue.poll().run();
+            }
+        }
     }
 
     private IVideoTextureRenderListener mTextureRenderListener;
