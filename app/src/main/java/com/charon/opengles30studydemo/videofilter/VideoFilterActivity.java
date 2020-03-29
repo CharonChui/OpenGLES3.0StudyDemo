@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.charon.opengles30studydemo.R;
 import com.charon.opengles30studydemo.videofilter.base.BaseFilter;
 import com.charon.opengles30studydemo.videofilter.filter.BeautyFilter;
+import com.charon.opengles30studydemo.videofilter.filter.BlackWhiteFilter;
 
 public class VideoFilterActivity extends Activity implements View.OnClickListener {
     private GLSurfaceView mGLSurfaceView;
@@ -23,6 +24,7 @@ public class VideoFilterActivity extends Activity implements View.OnClickListene
     private MediaPlayer mMediaPlayer;
     private Button mNormalFilter;
     private Button mBeautyFilter;
+    private Button mBlackWhiteFilter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class VideoFilterActivity extends Activity implements View.OnClickListene
         setContentView(R.layout.activity_video_filter);
         mNormalFilter = findViewById(R.id.mNormalFilter);
         mBeautyFilter = findViewById(R.id.mBeautyFilter);
+        mBlackWhiteFilter = findViewById(R.id.mBlackWhiteFilter);
         mGLSurfaceView = findViewById(R.id.mGLSurfaceView);
         mGLSurfaceView.setEGLContextClientVersion(3);
         mVideoFilterRender = new VideoFilterRender(mGLSurfaceView);
@@ -43,6 +46,7 @@ public class VideoFilterActivity extends Activity implements View.OnClickListene
         mGLSurfaceView.setRenderer(mVideoFilterRender);
         mNormalFilter.setOnClickListener(this);
         mBeautyFilter.setOnClickListener(this);
+        mBlackWhiteFilter.setOnClickListener(this);
     }
 
     @Override
@@ -128,7 +132,9 @@ public class VideoFilterActivity extends Activity implements View.OnClickListene
             case R.id.mBeautyFilter:
                 mVideoFilterRender.setFilter(new BeautyFilter());
                 break;
-
+            case R.id.mBlackWhiteFilter:
+                mVideoFilterRender.setFilter(new BlackWhiteFilter());
+                break;
             default:
                 break;
         }

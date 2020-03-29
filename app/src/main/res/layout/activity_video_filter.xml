@@ -23,4 +23,12 @@
         android:layout_below="@id/mNormalFilter"
         android:gravity="center"
         android:text="美颜" />
+
+    <Button
+        android:id="@+id/mBlackWhiteFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mBeautyFilter"
+        android:gravity="center"
+        android:text="黑白" />
 </RelativeLayout>
