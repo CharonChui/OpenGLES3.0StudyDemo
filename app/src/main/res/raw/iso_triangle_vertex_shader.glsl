@@ -1,5 +1,5 @@
-// 声明着色器的版本，OpenGL ES 3.0版本对应的着色器语言版本是 GLSL 300 ES
 #version 300 es
+// 声明着色器的版本，OpenGL ES 3.0版本对应的着色器语言版本是 GLSL 300 ES
 // 顶点着色器的顶点位置，输入一个名为vPosition的4分量向量，layout (location = 0)表示这个变量的位置是顶点属性中的第0个属性。
 layout (location = 0) in vec4 vPosition;
 // 顶点着色器的顶点颜色数据，输入一个名为aColor的4分量向量，layout (location = 1)表示这个变量的位置是顶点属性中的第1个属性。

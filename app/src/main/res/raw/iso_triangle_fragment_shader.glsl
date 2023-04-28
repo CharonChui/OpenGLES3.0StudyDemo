@@ -1,5 +1,5 @@
-// 声明着色器的版本
 #version 300 es
+// 声明着色器的版本
 // 声明着色器中浮点变量的默认精度
 precision mediump float;
 // 声明一个输入名为vColor的4分向量，来自上面的顶点着色器
