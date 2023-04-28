@@ -49,7 +49,6 @@ public class SquareRender extends BaseGLSurfaceViewRenderer {
         vertexBuffer = BufferUtil.getFloatBuffer(POINT_DATA);
         colorBuffer = BufferUtil.getFloatBuffer(COLOR_DATA);
     }
-
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
