@@ -119,11 +119,11 @@ public class IsoTriangleRender implements GLTextureView.Renderer {
         //把颜色缓冲区设置为我们预设的颜色
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
         //绑定vertex坐标数据，告诉OpenGL可以在缓冲区vertexBuffer中获取vPosition的护具
-        GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 0, vertexBuffer);
+        GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 3 * Float.BYTES, vertexBuffer);
         //启用顶点位置句柄
         GLES30.glEnableVertexAttribArray(0);
         //准备颜色数据
-        GLES30.glVertexAttribPointer(1, 4, GLES30.GL_FLOAT, false, 0, colorBuffer);
+        GLES30.glVertexAttribPointer(1, 4, GLES30.GL_FLOAT, false, 4 * Float.BYTES, colorBuffer);
         //启用顶点颜色句柄
         GLES30.glEnableVertexAttribArray(1);
         //绘制三角形

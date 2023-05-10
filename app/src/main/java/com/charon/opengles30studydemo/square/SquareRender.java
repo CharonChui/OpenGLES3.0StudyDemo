@@ -8,6 +8,7 @@ import com.charon.opengles30studydemo.base.BaseGLSurfaceViewRenderer;
 import com.charon.opengles30studydemo.util.BufferUtil;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

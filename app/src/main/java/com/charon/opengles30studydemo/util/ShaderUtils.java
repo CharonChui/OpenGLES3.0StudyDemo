@@ -64,6 +64,9 @@ public class ShaderUtils {
             GLES30.glAttachShader(programId, fragmentShaderId);
             //链接着色器程序
             GLES30.glLinkProgram(programId);
+            //删除
+            GLES30.glDeleteShader(vertexShaderId);
+            GLES30.glDeleteShader(fragmentShaderId);
             final int[] linkStatus = new int[1];
 
             GLES30.glGetProgramiv(programId, GLES30.GL_LINK_STATUS, linkStatus, 0);

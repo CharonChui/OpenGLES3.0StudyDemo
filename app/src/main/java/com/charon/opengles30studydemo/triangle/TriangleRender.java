@@ -15,13 +15,12 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class TriangleRender implements GLSurfaceView.Renderer {
-    //一个Float占用4Byte
-    private static final int BYTES_PER_FLOAT = 4;
     //三个顶点
     private static final int POSITION_COMPONENT_COUNT = 3;
     //顶点位置缓存
@@ -51,7 +50,7 @@ public class TriangleRender implements GLSurfaceView.Renderer {
         /****************2.为顶点位置及颜色申请本地内存 start************/
         //将顶点数据拷贝映射到native内存中，以便OpenGL能够访问
         //分配本地内存空间,每个浮点型占4字节空间；将坐标数据转换为FloatBuffer，用以传入给OpenGL ES程序
-        vertexBuffer = ByteBuffer.allocateDirect(triangleCoords.length * BYTES_PER_FLOAT) // 直接分配native内存
+        vertexBuffer = ByteBuffer.allocateDirect(triangleCoords.length * Float.BYTES) // 直接分配native内存
                 .order(ByteOrder.nativeOrder()) // 和本地平台保持一致的字节序
                 .asFloatBuffer(); // 将底层字节映射到FloatBuffer实例，方便使用
         vertexBuffer.put(triangleCoords); // 将顶点数据拷贝到native内存中
@@ -59,7 +58,7 @@ public class TriangleRender implements GLSurfaceView.Renderer {
         vertexBuffer.position(0);
 
         //顶点颜色相关
-        colorBuffer = ByteBuffer.allocateDirect(color.length * BYTES_PER_FLOAT)
+        colorBuffer = ByteBuffer.allocateDirect(color.length * Float.BYTES)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         colorBuffer.put(color);
@@ -86,6 +85,9 @@ public class TriangleRender implements GLSurfaceView.Renderer {
         /******************4.创建program，连接顶点和片段着色器并链接program end***********/
         //在OpenGLES环境中使用程序
         GLES30.glUseProgram(mProgram);
+        // 清除shader
+        GLES30.glDeleteShader(vertexShaderId);
+        GLES30.glDeleteShader(fragmentShaderId);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -101,7 +103,7 @@ public class TriangleRender implements GLSurfaceView.Renderer {
         //0是上面着色器中写的vPosition的变量位置(location = 0)。意思就是绑定vertex坐标数据，然后将在vertextBuffer中的顶点数据传给vPosition变量。
         // 你肯定会想，如果我在着色器中不写呢？int vposition = glGetAttribLocation(program, "vPosition");就可以获得他的属性位置了
         // 第二个size是3，是因为上面我们triangleCoords声明的属性就是3位，xyz
-        GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 0, vertexBuffer);
+        GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 3 * Float.BYTES, vertexBuffer);
         //启用顶点变量，这个0也是vPosition在着色器变量中的位置，和上面一样，在着色器文件中的location=0声明的
         GLES30.glEnableVertexAttribArray(0);
 
@@ -116,7 +118,7 @@ public class TriangleRender implements GLSurfaceView.Renderer {
          * ptr： 本地数据缓存（这里我们的是顶点的位置和颜色数据）。
          */
         // 1是aColor在属性的位置，4是因为我们声明的颜色是4位，r、g、b、a。
-        GLES30.glVertexAttribPointer(1, 4, GLES30.GL_FLOAT, false, 0, colorBuffer);
+        GLES30.glVertexAttribPointer(1, 4, GLES30.GL_FLOAT, false, 4 * Float.BYTES, colorBuffer);
         //启用顶点颜色句柄
         GLES30.glEnableVertexAttribArray(1);
 
@@ -201,8 +203,9 @@ public class TriangleRender implements GLSurfaceView.Renderer {
             GLES30.glAttachShader(programId, fragmentShaderId);
             //链接着色器程序
             GLES30.glLinkProgram(programId);
+            GLES30.glDeleteShader(vertexShaderId);
+            GLES30.glDeleteShader(fragmentShaderId);
             final int[] linkStatus = new int[1];
-
             GLES30.glGetProgramiv(programId, GLES30.GL_LINK_STATUS, linkStatus, 0);
             if (linkStatus[0] == 0) {
                 String logInfo = GLES30.glGetProgramInfoLog(programId);
